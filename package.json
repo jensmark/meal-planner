@@ -8,7 +8,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "drizzle": "drizzle-kit generate:pg --schema ./lib/drizzle.ts --out .drizzle"
   },
   "dependencies": {
     "@types/ms": "^0.7.32",
