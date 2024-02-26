@@ -20,9 +20,7 @@ export default async function RootLayout({
   return (
     <html lang="nb">
       <body className={inter.variable}>
-        <main className="min-h-screen">
           {children}
-        </main>
       </body>
     </html>
   )
