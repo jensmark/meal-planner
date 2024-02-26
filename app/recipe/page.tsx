@@ -25,7 +25,6 @@ export default async function Recipe() {
             <p>Julie sin fantastiske middagsplanlegger</p>
           </div>
         </main>
-  
       </div>
     )
   }
