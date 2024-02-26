@@ -1,14 +1,18 @@
-export const runtime = 'edge'
-export const dynamic = 'force-dynamic'
+import { getSession } from "@/lib/session"
 
-export default function Login() {
-  return (
-    <form action="/auth/login" method="post">
-      <label htmlFor="email">Email</label>
-      <input name="email" />
-      <label htmlFor="password">Password</label>
-      <input type="password" name="password" />
-      <button>Sign In</button>
-    </form>
-  )
+
+const LoginForm = () => (
+  <form action="/auth/login" method="post">
+    <label htmlFor="email">Email</label>
+    <input name="email" />
+    <label htmlFor="password">Password</label>
+    <input type="password" name="password" />
+    <button>Sign In</button>
+  </form>
+)
+
+export default async function Login() {
+  const session = await getSession()
+
+  return session ? null : <LoginForm/>
 }

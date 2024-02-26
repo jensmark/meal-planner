@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   const cookieStore = cookies()
   const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
-  const login = await supabase.auth.signInWithPassword({
+  await supabase.auth.signInWithPassword({
     email,
     password,
   })

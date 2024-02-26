@@ -18,7 +18,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="nb">
       <body className={inter.variable}>
         <main className="min-h-screen">
           {children}
