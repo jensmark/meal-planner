@@ -1,6 +1,7 @@
 "use client"
 
 import { User } from "@supabase/supabase-js"
+import Link from 'next/link'
 import { useState } from "react"
 
 
@@ -22,9 +23,9 @@ export default function Navigation({
                             <div className="flex items-baseline space-x-4">
                                 {
                                     navigation.map(({name, active, href}) => (
-                                        <a key={name} href={href} className={active ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"}>
+                                        <Link key={name} href={href} className={active ? "bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"}>
                                             {name}
-                                        </a>
+                                        </Link>
                                     ))
                                 }
                             </div>
@@ -59,9 +60,9 @@ export default function Navigation({
                     <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                         {
                             navigation.map(({name, active, href}) => (
-                                <a key={name} href={href} className={active ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"}>
+                                <Link key={name} href={href} className={active ? "bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" : "text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"}>
                                     {name}
-                                </a>
+                                </Link>
                             ))
                         }
                     </div>

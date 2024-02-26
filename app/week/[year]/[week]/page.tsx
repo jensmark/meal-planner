@@ -1,20 +1,15 @@
 import Navigation from '@/components/navigation'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
-import { DateTime } from 'luxon'
 import { db, MealWeekTable } from '@/lib/drizzle'
 import { eq, and } from 'drizzle-orm';
 
 
-export default async function Home() {
+export default async function WeekPlanner({params: { year, week }}: {params: {year: number, week: number}}) {
   const session = await getSession()
   if (!session) {
     redirect('/login')
   }
-  const now = DateTime.now()
-
-  const week = now.weekNumber
-  const year = now.weekYear
 
   const plan = await db.select()
     .from(MealWeekTable)
@@ -33,13 +28,14 @@ export default async function Home() {
       ownerId: session?.user?.id
     })
   }
+    
   
   //DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: d+1 }).toLocaleString(DateTime.DATE_FULL))
 
   return (
     <div className="min-h-full">
       <Navigation user={session.user} navigation={[
-        {name: "Planlegger", active: true, href: "/"},
+        {name: "Planlegger", active: true, href: `/week/${year}/${week}`},
         {name: "Oppskrifter", active: false, href: "/recipe"}
       ]}/>
 
@@ -51,6 +47,29 @@ export default async function Home() {
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           
+     
+            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+              <div className="group relative">
+                <div className="mt-4 flex justify-between">
+                  <div>
+                    <h3 className="text-sm text-gray-700">
+                      Mandag
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">Dato</p>
+                  </div>
+                </div>
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                  <div className="h-full w-full object-cover object-center lg:h-full lg:w-full">
+                    <p></p>
+                  </div>
+                </div>
+  
+              </div>
+
+            </div>
+       
+
+
         </div>
       </main>
 
