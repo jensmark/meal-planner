@@ -10,25 +10,12 @@ import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
 
-export const UsersTable = pgTable(
-  'users',
-  {
-    id: serial('id').primaryKey(),
-    name: text('name').notNull(),
-    email: text('email').notNull().unique(),
-    password: text('password').notNull(),
-    createdAt: timestamp('createdAt').defaultNow().notNull(),
-  }
-)
-export type User = InferSelectModel<typeof UsersTable>
-
-
 export const IngredientTable = pgTable(
   'ingredient',
   {
     id: serial('id').primaryKey(),
     name: text('name').notNull().unique(),
-    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   }
 )
 export type Ingredient = InferSelectModel<typeof IngredientTable>
@@ -39,9 +26,9 @@ export const RecipeTable = pgTable(
   'recipe', 
   {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').references(() => UsersTable.id),
+    createdBy: integer('created_by'),
     name: text('name').notNull().unique(),
-    createdAt: timestamp('createdAt').defaultNow().notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
     servings: integer('servings').default(1).notNull()
   }
 )
