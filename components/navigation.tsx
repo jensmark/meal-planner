@@ -14,6 +14,8 @@ export default function Navigation({
 }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+    console.log(user)
+
     return (
         <nav className="bg-gray-800">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -34,7 +36,7 @@ export default function Navigation({
                     <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
                             <div className="relative ml-3">
-                                <div className="text-base font-medium leading-none text-gray-400">{user?.email || ''}</div>
+                                <div className="text-base font-medium leading-none text-gray-400">{user?.user_metadata?.full_name || user?.email || ''}</div>
                             </div>
                         </div>
                     </div>

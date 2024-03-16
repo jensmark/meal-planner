@@ -5,7 +5,13 @@ import { getSession } from "@/lib/session"
 const LoginForm = () => (
   <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" action="/auth/login" method="post">
+      <form className="space-y-6" action="/auth/login/google" method="post">
+        <div>
+          <button type="submit" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Login med Google</button>
+        </div>
+      </form>
+
+      <form className="space-y-6 py-16" action="/auth/login" method="post">
         <div>
           <label className="block text-sm font-medium leading-6 text-gray-900">E-post</label>
           <div className="mt-2">
