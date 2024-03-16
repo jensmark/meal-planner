@@ -14,8 +14,6 @@ export default function Navigation({
 }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-    console.log(user)
-
     return (
         <nav className="bg-gray-800">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

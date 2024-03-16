@@ -2,7 +2,8 @@ import Navigation from '@/components/navigation'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { db, RecipeTable } from '@/lib/drizzle'
-import { eq, and } from 'drizzle-orm';
+import { DateTime } from 'luxon'
+import Link from 'next/link'
 
 export default async function Recipe() {
   const session = await getSession()
@@ -10,7 +11,8 @@ export default async function Recipe() {
     redirect('/login')
   }
 
-  const recipes = await db.select().from(RecipeTable)
+  const recipes = await db.select()
+    .from(RecipeTable)
 
   return (
     <div className="min-h-full">
@@ -20,8 +22,15 @@ export default async function Recipe() {
       ]} />
 
       <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Oppskrifter</h1>
+        <div className="flex justify-between mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Alle oppskrifter</h1>
+          <Link href="/recipe/new">
+            <button type="button" className="flex justify-center rounded-md h-10 bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-indigo-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+            </button>
+          </Link>
         </div>
       </header>
       <main>
@@ -31,9 +40,10 @@ export default async function Recipe() {
             <div className="group relative">
 
               {recipes.map(recipe => (
-                <p>
-                  recipe.name
-                </p>
+                <div key={recipe.id}>
+                  <p>{recipe.name}</p>
+                  <p>{DateTime.fromJSDate(recipe.createdAt).toLocaleString()}</p>
+                </div>
               ))}
 
             </div>
