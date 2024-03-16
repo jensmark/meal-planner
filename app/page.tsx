@@ -2,8 +2,9 @@ import Navigation from '@/components/navigation'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { DateTime } from 'luxon'
-import { db, MealWeekTable } from '@/lib/drizzle'
-import { eq, and } from 'drizzle-orm';
+import { PlannerHeader } from '@/components/planner/plannerHeader'
+import { PlannerPanel } from '@/components/planner/plannerPanel'
+
 
 
 export default async function Home() {
@@ -11,30 +12,7 @@ export default async function Home() {
   if (!session) {
     redirect('/login')
   }
-  const now = DateTime.now()
-
-  const week = now.weekNumber
-  const year = now.weekYear
-
-  const plan = await db.select()
-    .from(MealWeekTable)
-    .where(
-      and(
-        eq(MealWeekTable.weekNumber, week),
-        eq(MealWeekTable.year, year),
-        eq(MealWeekTable.ownerId, session?.user?.id)
-      )
-    )
-
-  if (plan.length == 0) {
-    await db.insert(MealWeekTable).values({
-      year: year,
-      weekNumber: week,
-      ownerId: session?.user?.id
-    })
-  }
-  
-  //DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: d+1 }).toLocaleString(DateTime.DATE_FULL))
+  const {weekNumber: week, weekYear: year} = DateTime.now()
 
   return (
     <div className="min-h-full">
@@ -43,15 +21,9 @@ export default async function Home() {
         {name: "Oppskrifter", active: false, href: "/recipe"}
       ]}/>
 
-      <header className="bg-white shadow">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Uke {week}</h1>
-        </div>
-      </header>
+      <PlannerHeader year={year} week={week}/>
       <main>
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          
-        </div>
+        <PlannerPanel year={year} week={week} user={session?.user}/>
       </main>
 
     </div>
