@@ -1,9 +1,10 @@
 import Navigation from '@/components/navigation'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
-import { db, RecipeTable } from '@/lib/drizzle'
+import { db, RecipeTable, RecipeIngredientTable, IngredientTable } from '@/lib/drizzle'
 import { DateTime } from 'luxon'
 import Link from 'next/link'
+import { eq } from 'drizzle-orm'
 
 export default async function Recipe() {
   const session = await getSession()
@@ -14,6 +15,19 @@ export default async function Recipe() {
   const recipes = await db.select()
     .from(RecipeTable)
 
+  const ingredients = await db.select()
+    .from(RecipeTable)
+    .leftJoin(RecipeIngredientTable, eq(RecipeTable.id, RecipeIngredientTable.recipeId))
+    .leftJoin(IngredientTable, eq(IngredientTable.id, RecipeIngredientTable.ingredientId))
+
+  const fullRecipes = recipes.map(recipe => ({
+    ...recipe,
+    ingredients: ingredients.filter(x => x.recipe.id === recipe.id).map(({recipe_ingredient, ingredient}) => ({
+      ...recipe_ingredient,
+      ...ingredient
+    }))
+  }))
+  
   return (
     <div className="min-h-full">
       <Navigation user={session.user} navigation={[
@@ -39,10 +53,19 @@ export default async function Recipe() {
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             <div className="group relative">
 
-              {recipes.map(recipe => (
+              {fullRecipes.map(recipe => (
                 <div key={recipe.id}>
                   <p>{recipe.name}</p>
                   <p>{DateTime.fromJSDate(recipe.createdAt).toLocaleString()}</p>
+                  <ul>
+                    {recipe.ingredients.map(ingredient => <li key={ingredient.name}>{ingredient.name} - {ingredient.quantity}{ingredient.measurementUnit}</li>)}
+                  </ul>
+                  {session.user.id === recipe.createdBy ? 
+                    <>
+                      <p><button>Rediger</button> </p>
+                      <p><button>Slett</button> </p>
+                    </>
+                    : null} 
                 </div>
               ))}
 

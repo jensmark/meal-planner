@@ -24,8 +24,6 @@ export async function POST(request: NextRequest) {
     unit: String(formData.get(`ingredient[${i}].unit`))
   }))
 
-console.log(ingredients)
-
   if (ingredients.length == 0) {
     return NextResponse.redirect(`${requestUrl.origin}/recipe/new`, {
       status: 302,
