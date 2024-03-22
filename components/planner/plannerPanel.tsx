@@ -1,9 +1,10 @@
 import { User } from "@supabase/auth-helpers-nextjs"
-import { db, MealWeekTable } from '@/lib/drizzle'
+import { db, MealWeekTable, WeekDayMealTable, RecipeTable } from '@/lib/drizzle'
 import { eq, and } from 'drizzle-orm';
 import { DateTime } from 'luxon'
+import { PlannerAddButton } from "./plannerAddButton";
 
-export const PlannerPanel = async ({ year, week, user }: { year: number, week: number, user: User }) => {
+const getWeekPlan = async (year: number, week: number, user: User) => {
     const plan = await db.select()
         .from(MealWeekTable)
         .where(
@@ -15,48 +16,71 @@ export const PlannerPanel = async ({ year, week, user }: { year: number, week: n
         )
 
     if (plan.length == 0) {
-        await db.insert(MealWeekTable).values({
+        const newPlan = await db.insert(MealWeekTable).values({
             year: year,
             weekNumber: week,
             ownerId: user?.id
-        })
+        }).returning()
+
+        return newPlan[0]
+    } 
+    else {
+        return plan[0]
     }
+}
+
+export const PlannerPanel = async ({ year, week, user }: { year: number, week: number, user: User }) => {
+    const plan = await getWeekPlan(year, week, user)
+    const recipes = await db.select()
+        .from(WeekDayMealTable)
+        .leftJoin(RecipeTable, eq(WeekDayMealTable.recipeId, RecipeTable.id))
+        .where(eq(WeekDayMealTable.mealWeekId, plan.id))
+
+    const allRecipes = await db.select()
+        .from(RecipeTable)
 
     const weekModel = [
         {
             index: 1,
             name: "Mandag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 1 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 1 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 1)
         },
         {
             index: 2,
             name: "Tirsdag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 2 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 2 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 2)
         },
         {
             index: 3,
             name: "Onsdag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 3 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 3 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 3)
         },
         {
             index: 4,
             name: "Torsdag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 4 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 4 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 4)
         },
         {
             index: 5,
             name: "Fredag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 5 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 5 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 5)
         },
         {
             index: 6,
             name: "Lørdag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 6 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 6 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 6)
         },
         {
             index: 7,
             name: "Søndag",
-            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 7 })
+            date: DateTime.fromObject({ weekYear: year, weekNumber: week, weekday: 7 }),
+            plan: recipes.filter(x => x.week_day_meal.dayOfWeek === 7)
         }
     ]
 
@@ -79,11 +103,7 @@ export const PlannerPanel = async ({ year, week, user }: { year: number, week: n
 
                                 {/** sdfds */}
 
-                                <button type="button" className="flex justify-center rounded-md w-full h-10 bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </button>
+                                <PlannerAddButton allRecipes={allRecipes}/>
                             </div>
                         </div>
                     </div>
