@@ -41,7 +41,8 @@ export const createRecipe = async (
                     recipeId: newItem[0].id,
                     ingredientId: x.id,
                     quantity: ingredients.find(y => y.name == x.name)?.quantity,
-                    measurementUnit: ingredients.find(y => y.name == x.name)?.unit
+                    measurementUnit: ingredients.find(y => y.name == x.name)?.unit,
+                    basic: false
                 }))
             )
 
