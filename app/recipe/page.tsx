@@ -1,10 +1,9 @@
 import Navigation from '@/components/navigation'
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
-import { db, RecipeTable, RecipeIngredientTable, IngredientTable } from '@/lib/drizzle'
 import { DateTime } from 'luxon'
 import Link from 'next/link'
-import { eq } from 'drizzle-orm'
+import { listFullRecipes } from '@/lib/data/recipe'
 
 export default async function Recipe() {
   const session = await getSession()
@@ -12,21 +11,7 @@ export default async function Recipe() {
     redirect('/login')
   }
 
-  const recipes = await db.select()
-    .from(RecipeTable)
-
-  const ingredients = await db.select()
-    .from(RecipeTable)
-    .leftJoin(RecipeIngredientTable, eq(RecipeTable.id, RecipeIngredientTable.recipeId))
-    .leftJoin(IngredientTable, eq(IngredientTable.id, RecipeIngredientTable.ingredientId))
-
-  const fullRecipes = recipes.map(recipe => ({
-    ...recipe,
-    ingredients: ingredients.filter(x => x.recipe.id === recipe.id).map(({recipe_ingredient, ingredient}) => ({
-      ...recipe_ingredient,
-      ...ingredient
-    }))
-  }))
+  const fullRecipes = await listFullRecipes()
   
   return (
     <div className="min-h-full">

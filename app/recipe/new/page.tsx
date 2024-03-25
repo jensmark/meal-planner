@@ -24,7 +24,7 @@ export default async function NewRecipe() {
                 </div>
             </header>
             <main>
-                <form action="/recipe/new/api" method="post">
+                <form action="/recipe/form" method="post">
                     <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl">
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
