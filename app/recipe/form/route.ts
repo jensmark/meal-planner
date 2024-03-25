@@ -21,9 +21,21 @@ export async function POST(request: NextRequest) {
     name: String(formData.get(`ingredient[${i}].name`)),
     quantity: Number(formData.get(`ingredient[${i}].quantity`)),
     unit: String(formData.get(`ingredient[${i}].unit`))
-  }))
+  }))  
 
   if (ingredients.length == 0) {
+    return NextResponse.redirect(`${requestUrl.origin}/recipe/new`, {
+      status: 302,
+    })
+  }
+
+  if(name === "" || name === null) {
+    return NextResponse.redirect(`${requestUrl.origin}/recipe/new`, {
+      status: 302,
+    })
+  }
+
+  if (ingredients.find(x => x.name === "" || x.name === null) !== undefined) {
     return NextResponse.redirect(`${requestUrl.origin}/recipe/new`, {
       status: 302,
     })

@@ -5,7 +5,7 @@ import { PlannerAddButton } from "./plannerAddButton";
 import { WeekPlan } from "@/lib/data/planner";
 
 
-export const PlannerPanel = async (
+export const PlannerPanel = (
     { 
         mealWeek,
         weekPlan,

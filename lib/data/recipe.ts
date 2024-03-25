@@ -66,3 +66,10 @@ export const listFullRecipes = async () => {
         }))
     }))
 }
+
+export const deleteRecipe = async (recipeId: number) => {
+    await db.transaction(async tx => {
+        await tx.delete(RecipeIngredientTable).where(eq(RecipeIngredientTable.recipeId, recipeId))
+        await tx.delete(RecipeTable).where(eq(RecipeTable.id, recipeId))
+    })
+}
