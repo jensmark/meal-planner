@@ -5,7 +5,8 @@ import {
   timestamp,
   real,
   integer,
-  varchar
+  varchar,
+  boolean
 } from 'drizzle-orm/pg-core'
 import { InferSelectModel, InferInsertModel } from 'drizzle-orm'
 import { sql } from '@vercel/postgres'
@@ -44,7 +45,8 @@ export const RecipeIngredientTable = pgTable(
     ingredientId: integer('ingredient_id').references(() => IngredientTable.id),
     recipeId: integer('recipe_id').references(() => RecipeTable.id),
     quantity: real('quantity').default(1.0).notNull(),
-    measurementUnit: varchar('measurement_unit').default('count').notNull()
+    measurementUnit: varchar('measurement_unit').default('count').notNull(),
+    basic: boolean('basic').notNull()
   }
 )
 export type RecipeIngredient = InferSelectModel<typeof RecipeIngredientTable>
